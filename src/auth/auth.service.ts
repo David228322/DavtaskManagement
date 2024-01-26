@@ -28,7 +28,7 @@ export class AuthService {
       },
     });
     if (user && user.password !== bcrypt.compare(password, user.password)) {
-      const payload: JwtPayload = { username };
+      const payload: JwtPayload = { username: user.username, userId: user.id };
       const accessToken: string = await this._jwtService.signAsync(payload);
       return { accessToken };
     } else {
@@ -48,7 +48,7 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { username: user.username, sub: user.userId };
+    const payload = { username: user.username, sub: user.id };
     return {
       access_token: this._jwtService.sign(payload),
     };

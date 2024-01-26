@@ -13,6 +13,8 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { Task } from './task.entity';
 import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
+import { GetUser } from '../auth/get-user.decorator';
+import { User } from '../auth/user.entity';
 
 @Controller('tasks')
 export class TasksController {
@@ -29,8 +31,11 @@ export class TasksController {
   }
 
   @Post()
-  createTask(@Body() task: CreateTaskDto): Promise<Task> {
-    return this._tasksService.createTask(task);
+  createTask(
+    @GetUser() user: User,
+    @Body() task: CreateTaskDto,
+  ): Promise<Task> {
+    return this._tasksService.createTask(task, user);
   }
 
   @Patch('/:id/status')
