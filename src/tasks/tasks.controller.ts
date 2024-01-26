@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   Patch,
   Post,
@@ -15,13 +16,24 @@ import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { GetUser } from '../auth/get-user.decorator';
 import { User } from '../auth/user.entity';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('tasks')
 export class TasksController {
-  constructor(private readonly _tasksService: TasksService) {}
+  private logger = new Logger('TasksController', { timestamp: true });
+
+  constructor(
+    private readonly _tasksService: TasksService,
+    private configService: ConfigService,
+  ) {
+    Logger.verbose(this.configService.get('HELLO'));
+  }
 
   @Get()
   getTasks(@Query() filterDto: GetTasksFilterDto): Promise<Task[]> {
+    this.logger.verbose(
+      `User is trynna to get task by filters: ${JSON.stringify(filterDto)}`,
+    );
     return this._tasksService.getTasks(filterDto);
   }
 
